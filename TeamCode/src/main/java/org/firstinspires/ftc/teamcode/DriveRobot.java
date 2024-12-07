@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
 
+import java.util.concurrent.TimeUnit;
+
 @TeleOp(name = "Basic Drive")
 public class DriveRobot extends OpMode {
     private DcMotor frontLeftMotor;
@@ -31,9 +33,9 @@ public class DriveRobot extends OpMode {
         leftPulleyMotor = hardwareMap.get(DcMotor.class, "leftPulley");
         axonServo = hardwareMap.get(CRServo.class, "axon");
         clawServo = hardwareMap.get(Servo.class, "armServo");
+        clawClosed = false;
         ControlHub_ServoController = hardwareMap.get(ServoController.class, "Control Hub");
         ControlHub_ServoController.pwmEnable();
-        clawClosed = false;
 
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -67,10 +69,10 @@ public class DriveRobot extends OpMode {
         double rightFrontPower = axial - lateral - yaw;
         double leftBackPower   = axial - lateral + yaw;
         double rightBackPower  = axial + lateral - yaw;
-        double rightPulleyPower = gamepad1.dpad_up ? 1.0 : 0.0;
-        double leftPulleyPower = gamepad1.dpad_up ? 1.0 : 0.0;
-        rightPulleyPower = gamepad1.dpad_down ? -1.0 : rightPulleyPower;
-        leftPulleyPower = gamepad1.dpad_down ? -1.0 : leftPulleyPower;
+        double rightPulleyPower = gamepad2.dpad_up ? 1.0 : 0.0;
+        double leftPulleyPower = gamepad2.dpad_up ? 1.0 : 0.0;
+        rightPulleyPower = gamepad2.dpad_down ? -1.0 : rightPulleyPower;
+        leftPulleyPower = gamepad2.dpad_down ? -1.0 : leftPulleyPower;
 
         // Normalize the values so no wheel power exceeds 100%
         // This ensures that the robot maintains the desired motion.
@@ -85,19 +87,29 @@ public class DriveRobot extends OpMode {
             rightBackPower  /= max;
         }
 
-//        if (gamepad1.cross) {
-//            if (clawClosed) {
-//                clawServo.setPosition(1);
-//                clawClosed = false;
-//            } else {
-//                clawServo.setPosition(0);
-//                clawClosed = true;
-//            }
-//        }
+        if (gamepad2.a) {
+            if (clawClosed) {
+                clawServo.setPosition(0.25);
+                clawClosed = false;
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            } else {
+                clawServo.setPosition(0);
+                clawClosed = true;
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
 
-        if (gamepad1.right_stick_y > 0) {
+        if (gamepad2.right_stick_y > 0) {
             axonServo.setDirection(DcMotorSimple.Direction.FORWARD);
-        } else if (gamepad1.right_stick_y < 0) {
+        } else if (gamepad2.right_stick_y < 0) {
             axonServo.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
@@ -108,15 +120,15 @@ public class DriveRobot extends OpMode {
         //rightFrontPower = gamepad1.square ? 1.0 : 0.0;
         //rightBackPower  = gamepad1.triangle ? 1.0 : 0.0;
         //rightPulleyPower = gamepad1.dpad_up ? 1.0 : 0.0;
-        //leftPulleyPower = gamepad1.dpad_down ? 1.0 : 0.0;
+        //leftPulleyPower = gamepad1.dpad_down ? 1.0 : 0.0
 
-        frontLeftMotor.setPower(leftFrontPower);
-        frontRightMotor.setPower(rightFrontPower);
-        backLeftMotor.setPower(leftBackPower);
-        backRightMotor.setPower(rightBackPower);
+        frontLeftMotor.setPower(leftFrontPower * 0.7);
+        frontRightMotor.setPower(rightFrontPower * 0.7);
+        backLeftMotor.setPower(leftBackPower * 0.7);
+        backRightMotor.setPower(rightBackPower * 0.7);
         rightPulleyMotor.setPower(rightPulleyPower);
         leftPulleyMotor.setPower(leftPulleyPower);
-        axonServo.setPower(Math.abs(gamepad1.right_stick_y));
+        axonServo.setPower(Math.abs(gamepad2.right_stick_y));
 
         // Show wheel power for debugging
         telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
