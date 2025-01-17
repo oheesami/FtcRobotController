@@ -89,7 +89,7 @@ public class DriveRobot extends OpMode {
 
         if (gamepad2.a) {
             if (clawClosed) {
-                clawServo.setPosition(0.25);
+                clawServo.setPosition(0.35);
                 clawClosed = false;
                 try {
                     Thread.sleep(1000);
@@ -107,9 +107,9 @@ public class DriveRobot extends OpMode {
             }
         }
 
-        if (gamepad2.right_stick_y > 0) {
+        if (gamepad2.left_stick_y > 0) {
             axonServo.setDirection(DcMotorSimple.Direction.FORWARD);
-        } else if (gamepad2.right_stick_y < 0) {
+        } else if (gamepad2.left_stick_y < 0) {
             axonServo.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
@@ -126,9 +126,9 @@ public class DriveRobot extends OpMode {
         frontRightMotor.setPower(rightFrontPower * 0.7);
         backLeftMotor.setPower(leftBackPower * 0.7);
         backRightMotor.setPower(rightBackPower * 0.7);
-        rightPulleyMotor.setPower(rightPulleyPower);
-        leftPulleyMotor.setPower(leftPulleyPower);
-        axonServo.setPower(Math.abs(gamepad2.right_stick_y));
+        rightPulleyMotor.setPower(rightPulleyPower * 0.7);
+        leftPulleyMotor.setPower(leftPulleyPower * 0.7);
+        axonServo.setPower(Math.abs(gamepad2.left_stick_y));
 
         // Show wheel power for debugging
         telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
