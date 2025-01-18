@@ -10,13 +10,13 @@ public class robotarmtest extends LinearOpMode {
     private Servo axon2;
 
     // Constants for servo control
-    private static final double STEP_SIZE = 0.01; // Joystick step size
+    private static final double STEP_SIZE = 0.005; // Joystick step size
     private static final double MIN_POSITION = 0.0; // Servo minimum position
-    private static final double MAX_POSITION = 1.0; // Servo maximum position
+    private static final double MAX_POSITION = 2.0; // Increased max position (you can change this if needed)
 
     // Initial servo positions (flipping the initial positions)
-    private double axon1Position = 1.0; // Starting position for axon1 (was 0.0)
-    private double axon2Position = 0.0; // Starting position for axon2 (was 1.0)
+    private double axon1Position = 0.0; // Starting position for axon1 (0.0)
+    private double axon2Position = 1.0; // Starting position for axon2 (1.0)
 
     @Override
     public void runOpMode() {
@@ -28,7 +28,7 @@ public class robotarmtest extends LinearOpMode {
         axon1.scaleRange(MIN_POSITION, MAX_POSITION);
         axon2.scaleRange(MIN_POSITION, MAX_POSITION);
 
-        // Set initial positions (flipped)
+        // Set initial positions
         axon1.setPosition(axon1Position);
         axon2.setPosition(axon2Position);
 
