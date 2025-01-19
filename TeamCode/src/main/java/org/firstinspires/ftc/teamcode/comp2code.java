@@ -108,11 +108,11 @@ public class comp2code extends OpMode {
         double leftBackPower   = axial - lateral + yaw;
         double rightBackPower  = axial + lateral - yaw;
         double pushyLeftPower = Math.abs(gamepad1.left_trigger) > 0.1 ? 1.0 : 0.0;
-        double pushyRightPower = Math.abs(gamepad1.left_trigger) > 0.1 ? 1.0 : 0.0;
+        double pushyRightPower = Math.abs(gamepad1.left_trigger) > 0.1 ? -1.0 : 0.0;
         double rightPulleyPower = gamepad2.dpad_up ? 1.0 : 0.0;
         double leftPulleyPower = gamepad2.dpad_up ? 1.0 : 0.0;
         pushyLeftPower = Math.abs(gamepad1.right_trigger) > 0.1 ? -1.0 : pushyLeftPower;
-        pushyRightPower = Math.abs(gamepad1.right_trigger) > 0.1 ? -1.0 : pushyRightPower;
+        pushyRightPower = Math.abs(gamepad1.right_trigger) > 0.1 ? 1.0 : pushyRightPower;
         rightPulleyPower = gamepad2.dpad_down ? -1.0 : rightPulleyPower;
         leftPulleyPower = gamepad2.dpad_down ? -1.0 : leftPulleyPower;
 
