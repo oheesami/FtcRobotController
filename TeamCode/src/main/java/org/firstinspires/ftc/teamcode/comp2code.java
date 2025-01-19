@@ -26,6 +26,8 @@ public class comp2code extends OpMode {
     private Servo goBildaLift;
     private CRServo pushyLeft;
     private CRServo pushyRight;
+    private CRServo armServo;
+    private Servo clawMotor;
 
     // Constants for servo positions
     private static final double CLAW_OPEN = 1.0;
@@ -46,6 +48,10 @@ public class comp2code extends OpMode {
 
     double liftPosition = LIFT_MIN;
 
+    private static final double CLAW_OPEN_POWER = 0.5; // Reduced power for opening
+    private static final double CLAW_CLOSED_POWER = 0; // Reduced power for closing
+
+    private boolean clawOpen = true; // Track claw state
 
     @Override
     public void init() {
@@ -61,6 +67,8 @@ public class comp2code extends OpMode {
         axon2 = hardwareMap.get(Servo.class, "axon2");
         goBildaClaw = hardwareMap.get(Servo.class, "goBildaClaw");
         goBildaLift = hardwareMap.get(Servo.class, "goBildaLift");
+        armServo = hardwareMap.get(CRServo.class, "armServo");
+        clawMotor = hardwareMap.get(Servo.class, "clawMotor");
         ControlHub_ServoController = hardwareMap.get(ServoController.class, "Control Hub");
         ControlHub_ServoController.pwmEnable();
 
@@ -170,6 +178,20 @@ public class comp2code extends OpMode {
             // Clamp positions within valid range
             axon1Position = Math.max(MIN_POSITION, Math.min(MAX_POSITION, axon1Position));
             axon2Position = Math.max(MIN_POSITION, Math.min(MAX_POSITION, axon2Position));
+        }
+
+        double armPower = gamepad1.left_stick_x * 0.5; // Scale down power to prevent excessive speed
+        armServo.setPower(armPower);
+
+        // Open/Close claw functionality using buttons
+        if (gamepad1.a) {
+            // Open the claw
+            clawMotor.setPosition(CLAW_OPEN_POWER);
+            clawOpen = true;
+        } else if (gamepad1.b) {
+            // Close the claw
+            clawMotor.setPosition(CLAW_CLOSED_POWER);
+            clawOpen = false;
         }
 
         axon1.setPosition(axon1Position);
